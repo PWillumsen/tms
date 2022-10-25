@@ -1,6 +1,8 @@
 use crate::cli::ConfigArgs;
 use serde::{Deserialize, Serialize};
+use std::env::var;
 use std::path::PathBuf;
+use std::process::Command;
 
 #[derive(Default, Debug, Serialize, Deserialize)]
 struct Config {
@@ -10,25 +12,25 @@ struct Config {
     full_path: Option<bool>,
 }
 
-pub fn update_config(config_args: &ConfigArgs) -> anyhow::Result<()> {
+pub fn update_config(config_args: ConfigArgs) -> anyhow::Result<()> {
     let mut cfg: Config = confy::load("tms-v2", None)?;
 
     let mut changed = false;
 
-    if let Some(paths) = &config_args.paths {
+    if let Some(mut paths) = config_args.paths {
         changed = true;
-        cfg.paths.append(&mut paths.clone());
+        cfg.paths.append(&mut paths);
     }
-    if let Some(remove) = &config_args.remove {
+    if let Some(remove) = config_args.remove {
         changed = true;
         cfg.paths.retain(|path| !remove.contains(path));
     }
 
-    if let Some(exclude) = &config_args.exclude {
+    if let Some(mut exclude) = config_args.exclude {
         changed = true;
-        cfg.exclude.append(&mut exclude.clone());
+        cfg.exclude.append(&mut exclude);
     }
-    if let Some(remove_exclude) = &config_args.remove_exclude {
+    if let Some(remove_exclude) = config_args.remove_exclude {
         changed = true;
         cfg.exclude.retain(|path| !remove_exclude.contains(path));
     }
@@ -38,13 +40,20 @@ pub fn update_config(config_args: &ConfigArgs) -> anyhow::Result<()> {
         cfg.full_path = Some(full_paths);
     }
 
-    if let Some(default_session) = &config_args.default_session {
+    if let Some(default_session) = config_args.default_session {
         changed = true;
-        cfg.default_session = Some(default_session.clone());
+        cfg.default_session = Some(default_session);
     }
 
     // TODO: Change to subcommand?
-    // config_args.edit
+    if config_args.edit {
+        let path = confy::get_configuration_file_path("tms-v2", None)?;
+
+        let editor = var("EDITOR");
+        if let Ok(editor) = editor {
+            Command::new(editor).arg(path).status()?;
+        }
+    }
 
     if config_args.show {
         println!("{:#?}", cfg);

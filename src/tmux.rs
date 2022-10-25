@@ -3,7 +3,7 @@ use anyhow;
 pub fn invoke_tms() -> anyhow::Result<()> {
     Ok(())
 }
-pub fn kill_session(_session: &Option<String>) -> anyhow::Result<()> {
+pub fn kill_session(_session: Option<String>) -> anyhow::Result<()> {
     todo!()
 }
 

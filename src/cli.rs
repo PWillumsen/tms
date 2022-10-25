@@ -30,31 +30,37 @@ pub enum Commands {
 pub struct ConfigArgs {
     /// The default session to switch to (if avaliable) when killing another session
     #[arg(short, long)]
-    default_session: Option<String>,
+    pub default_session: Option<String>,
 
     /// Open config in $EDITOR
     #[arg(long)]
-    edit: bool,
+    pub edit: bool,
 
+    // Sub directories to exclude from paths
     #[arg(short, long)]
-    exclude: Option<Vec<PathBuf>>,
+    pub exclude: Option<Vec<PathBuf>>,
+
+    // Remove directories to exclude list
+    #[arg(long)]
+    pub remove_exclude: Option<Vec<PathBuf>>,
 
     /// Display full paths
     #[arg(short, long)]
-    full_paths: Option<bool>,
+    pub full_paths: Option<bool>,
 
     /// The paths to search through. Paths must be full paths (no support for ~)
     #[arg(short, long)]
-    paths: Option<Vec<PathBuf>>,
+    pub paths: Option<Vec<PathBuf>>,
 
     #[arg(short, long)]
-    remove: Option<Vec<PathBuf>>,
+    pub remove: Option<Vec<PathBuf>>,
 
     /// Print config
     #[arg(short, long)]
-    show: bool,
+    pub show: bool,
 }
 
-pub fn generate_completions(shell: &Shell) {
-    generate(*shell, &mut TmsArgs::command(), "myapp", &mut io::stdout())
+pub fn generate_completions(shell: &Shell) -> anyhow::Result<()> {
+    generate(*shell, &mut TmsArgs::command(), "myapp", &mut io::stdout());
+    Ok(())
 }

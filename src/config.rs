@@ -5,14 +5,14 @@ use std::path::PathBuf;
 use std::process::Command;
 
 #[derive(Default, Debug, Serialize, Deserialize)]
-struct Config {
-    paths: Vec<PathBuf>,
-    exclude: Vec<PathBuf>,
-    default_session: Option<String>,
-    full_path: Option<bool>,
+pub(crate) struct Config {
+    pub paths: Vec<PathBuf>,
+    pub exclude: Vec<PathBuf>,
+    pub default_session: Option<String>,
+    pub full_path: Option<bool>,
 }
 
-pub fn update_config(config_args: ConfigArgs) -> anyhow::Result<()> {
+pub(crate) fn update_config(config_args: ConfigArgs) -> anyhow::Result<()> {
     let mut cfg: Config = confy::load("tms-v2", None)?;
 
     let mut changed = false;
@@ -63,4 +63,9 @@ pub fn update_config(config_args: ConfigArgs) -> anyhow::Result<()> {
         confy::store("tms-v2", None, cfg)?;
     }
     Ok(())
+}
+
+pub(crate) fn load_config() -> anyhow::Result<Config> {
+    let cfg: Config = confy::load("tms-v2", None)?;
+    Ok(cfg)
 }

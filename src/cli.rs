@@ -5,7 +5,7 @@ use std::io;
 use std::path::PathBuf;
 
 #[derive(Parser, Debug)]
-#[command(author, version, about, long_about = None)]
+#[command( version, about, long_about = None)]
 pub struct TmsArgs {
     #[command(subcommand)]
     pub command: Option<Commands>,
@@ -13,13 +13,20 @@ pub struct TmsArgs {
 
 #[derive(Subcommand, Debug)]
 pub enum Commands {
+    /// Config options
     #[clap(arg_required_else_help = true)]
     Config(ConfigArgs),
+    /// Kill session
     Kill {
         #[arg(short, long)]
         session: Option<String>,
+        #[arg(short, long, exclusive = true)]
+        interactive: bool,
     },
+    /// List all running tmux sessions
+    #[clap(visible_alias = "ls")]
     List,
+    /// Generate shell completions
     Completions {
         #[arg(value_enum)]
         shell: Shell,
@@ -37,7 +44,7 @@ pub struct ConfigArgs {
     pub edit: bool,
 
     // Sub directories to exclude from paths
-    #[arg(short, long)]
+    #[clap(short, long, value_parser)]
     pub exclude: Option<Vec<PathBuf>>,
 
     // Remove directories to exclude list
@@ -61,6 +68,6 @@ pub struct ConfigArgs {
 }
 
 pub fn generate_completions(shell: &Shell) -> anyhow::Result<()> {
-    generate(*shell, &mut TmsArgs::command(), "myapp", &mut io::stdout());
+    generate(*shell, &mut TmsArgs::command(), "tms", &mut io::stdout());
     Ok(())
 }

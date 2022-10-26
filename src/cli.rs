@@ -18,9 +18,9 @@ pub enum Commands {
     Config(ConfigArgs),
     /// Kill session
     Kill {
-        #[arg(short, long)]
+        #[clap(short, long)]
         session: Option<String>,
-        #[arg(short, long, exclusive = true)]
+        #[clap(short, long, exclusive = true)]
         interactive: bool,
     },
     /// List all running tmux sessions
@@ -28,42 +28,45 @@ pub enum Commands {
     List,
     /// Generate shell completions
     Completions {
-        #[arg(value_enum)]
+        #[clap(value_enum)]
         shell: Shell,
     },
+    //TODO: Add interactive switch command
 }
 
 #[derive(Args, Debug)]
 pub struct ConfigArgs {
     /// The default session to switch to (if avaliable) when killing another session
-    #[arg(short, long)]
+    #[clap(short, long)]
     pub default_session: Option<String>,
 
     /// Open config in $EDITOR
-    #[arg(long)]
+    #[clap(long, exclusive = true)]
     pub edit: bool,
 
-    // Sub directories to exclude from paths
+    /// Sub directories to exclude from paths
     #[clap(short, long, value_parser)]
     pub exclude: Option<Vec<PathBuf>>,
 
-    // Remove directories to exclude list
-    #[arg(long)]
+    /// Remove directories to exclude list
+    #[clap(long)]
     pub remove_exclude: Option<Vec<PathBuf>>,
 
     /// Display full paths
-    #[arg(short, long)]
+    #[clap(short, long)]
     pub full_paths: Option<bool>,
 
     /// The paths to search through. Paths must be full paths (no support for ~)
-    #[arg(short, long)]
+    #[clap(short, long)]
     pub paths: Option<Vec<PathBuf>>,
 
-    #[arg(short, long)]
+    /// Remove previously added paths
+    #[clap(short, long)]
     pub remove: Option<Vec<PathBuf>>,
 
+    //TODO: fix how config is displayed, impl display
     /// Print config
-    #[arg(short, long)]
+    #[clap(short, long)]
     pub show: bool,
 }
 

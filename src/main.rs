@@ -1,7 +1,6 @@
 use clap::Parser;
 use cli::{Commands, TmsArgs};
 use color_eyre::eyre::Result;
-use color_eyre::eyre::WrapErr;
 
 mod cli;
 mod config;
@@ -19,12 +18,12 @@ fn main() -> Result<()> {
         Some(Commands::Kill { interactive }) => {
             tmux::kill_session(interactive, config.default_session)
         }
+
         Some(Commands::List) => tmux::list_sessions(),
         Some(Commands::Config(command)) => config::update_config(command),
         Some(Commands::Completions { shell }) => cli::generate_completions(&shell),
         None => tmux::invoke_tms(config.paths, config.exclude, config.full_path),
-    }
-    .wrap_err("Error from main")?;
+    }?;
 
     Ok(())
 }

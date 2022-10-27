@@ -5,7 +5,6 @@ use std::{
     path::PathBuf,
 };
 
-//TODO: filter map?
 pub(crate) fn get_repos(
     paths: Vec<PathBuf>,
     exclude: Vec<PathBuf>,
@@ -24,7 +23,7 @@ pub(crate) fn get_repos(
         if !exclude.contains(&file_name.into()) {
             if let Ok(repo) = git2::Repository::open(file.clone()) {
                 let name = match full_path {
-                    Some(true) => file.to_str().unwrap().to_string(),
+                    Some(true) => file.to_string_lossy().to_string(),
                     _ => file_name.to_string(),
                 };
                 repos.insert(name, repo);

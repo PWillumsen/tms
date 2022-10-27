@@ -1,5 +1,5 @@
 use crate::{repos, select};
-use color_eyre::eyre::Result;
+use color_eyre::eyre::{Context, Result};
 use std::path::{Path, PathBuf};
 use tmux_interface::variables::session::session::SESSION_ALL;
 use tmux_interface::{KillSession, NewSession, Session, Sessions, TmuxCommand};
@@ -67,12 +67,16 @@ fn tm_switch(session: &str) -> Result<()> {
     TmuxCommand::new()
         .switch_client()
         .target_session(session)
-        .output()?;
+        .output()
+        .wrap_err(format!("Error switching to session {:?}", session))?;
     Ok(())
 }
 
 fn tm_kill(session: &str) -> Result<()> {
-    KillSession::new().target_session(session).output()?;
+    KillSession::new()
+        .target_session(session)
+        .output()
+        .wrap_err(format!("Error killing session {:?}", session))?;
     Ok(())
 }
 
@@ -81,15 +85,19 @@ fn tm_new(session: &str, dir: &Path) -> Result<()> {
         .detached()
         .session_name(session)
         .start_directory(dir.to_string_lossy())
-        .output()?;
+        .output()
+        .wrap_err(format!(
+            "Error creating new session {} with start directory {:?}",
+            session, dir
+        ))?;
     Ok(())
 }
 
-fn get_sessions() -> Result<Sessions, tmux_interface::Error> {
-    Sessions::get(SESSION_ALL)
+fn get_sessions() -> Result<Sessions> {
+    Sessions::get(SESSION_ALL).wrap_err("Error getting all sessions")
 }
 
-fn get_attached_session() -> Result<Option<Session>, tmux_interface::Error> {
+fn get_attached_session() -> Result<Option<Session>> {
     Ok(get_sessions()?
         .into_iter()
         .find(|session| session.attached == Some(1)))

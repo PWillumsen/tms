@@ -18,7 +18,7 @@ pub enum Commands {
     Config(ConfigArgs),
     /// Kill session
     Kill {
-        #[clap(short, long, exclusive = true)]
+        #[clap(short, long)]
         interactive: bool,
     },
     /// List all running tmux sessions
@@ -59,7 +59,7 @@ pub struct ConfigArgs {
     pub paths: Option<Vec<PathBuf>>,
 
     /// Remove previously added paths
-    #[clap(short, long)]
+    #[clap(long)]
     pub paths_remove: Option<Vec<PathBuf>>,
 
     //TODO: fix how config is displayed, impl display

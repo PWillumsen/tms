@@ -4,9 +4,9 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-anyhow = "1.0.66"
 clap = { version = "4.0.18", features = ["derive"] }
 clap_complete = "4.0.3"
+color-eyre = {version = "0.6.2", default-features = false}
 confy = "0.5.1"
 git2 = "0.15.0"
 serde = { version = "1.0.147", features = ["derive"] }

@@ -18,6 +18,6 @@ pub(crate) fn select_item(input: String) -> Option<String> {
         return None;
     }
 
-    //TODO: fix option. make more robust
+    //NOTE: Can it fail?
     Some(selected_items.selected_items[0].output().to_string())
 }

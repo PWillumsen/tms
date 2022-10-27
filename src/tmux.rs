@@ -1,6 +1,6 @@
-use std::path::{Path, PathBuf};
-
 use crate::{repos, select};
+use color_eyre::eyre::Result;
+use std::path::{Path, PathBuf};
 use tmux_interface::variables::session::session::SESSION_ALL;
 use tmux_interface::{KillSession, NewSession, Session, Sessions, TmuxCommand};
 
@@ -8,7 +8,7 @@ pub(crate) fn invoke_tms(
     paths: Vec<PathBuf>,
     exclude: Vec<PathBuf>,
     full_path: Option<bool>,
-) -> anyhow::Result<()> {
+) -> Result<()> {
     let repos = repos::get_repos(paths, exclude, full_path);
 
     let select_options = repos.keys().cloned().collect::<Vec<String>>().join("\n");
@@ -34,10 +34,7 @@ pub(crate) fn invoke_tms(
 
     Ok(())
 }
-pub(crate) fn kill_session(
-    _interactive: bool,
-    default_session: Option<String>,
-) -> anyhow::Result<()> {
+pub(crate) fn kill_session(_interactive: bool, default_session: Option<String>) -> Result<()> {
     //TODO: Add interactive
 
     let current_session = get_attached_session();
@@ -52,23 +49,21 @@ pub(crate) fn kill_session(
     Ok(())
 }
 
-pub(crate) fn list_sessions() -> anyhow::Result<()> {
-    return Err(anyhow::anyhow!("test error"));
+pub(crate) fn list_sessions() -> Result<()> {
+    for session in get_sessions()? {
+        let current = match session.attached {
+            Some(1) => "*",
+            _ => "",
+        };
+        if let Some(name) = session.name {
+            println!("{}{} ", name, current);
+        }
+    }
 
-    // for session in get_sessions()? {
-    //     let current = match session.attached {
-    //         Some(1) => "*",
-    //         _ => "",
-    //     };
-    //     if let Some(name) = session.name {
-    //         println!("{}{} ", name, current);
-    //     }
-    // }
-
-    // Ok(())
+    Ok(())
 }
 
-fn tm_switch(session: &str) -> anyhow::Result<()> {
+fn tm_switch(session: &str) -> Result<()> {
     TmuxCommand::new()
         .switch_client()
         .target_session(session)
@@ -76,12 +71,12 @@ fn tm_switch(session: &str) -> anyhow::Result<()> {
     Ok(())
 }
 
-fn tm_kill(session: &str) -> anyhow::Result<()> {
+fn tm_kill(session: &str) -> Result<()> {
     KillSession::new().target_session(session).output()?;
     Ok(())
 }
 
-fn tm_new(session: &str, dir: &Path) -> anyhow::Result<()> {
+fn tm_new(session: &str, dir: &Path) -> Result<()> {
     NewSession::new()
         .detached()
         .session_name(session)

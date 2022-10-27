@@ -1,4 +1,5 @@
 use crate::cli::ConfigArgs;
+use color_eyre::eyre::Result;
 use serde::{Deserialize, Serialize};
 use std::env::var;
 use std::path::PathBuf;
@@ -12,7 +13,7 @@ pub(crate) struct Config {
     pub full_path: Option<bool>,
 }
 
-pub(crate) fn update_config(config_args: ConfigArgs) -> anyhow::Result<()> {
+pub(crate) fn update_config(config_args: ConfigArgs) -> Result<()> {
     let mut cfg: Config = confy::load("tms-v2", None)?;
 
     let mut changed = false;
@@ -65,7 +66,7 @@ pub(crate) fn update_config(config_args: ConfigArgs) -> anyhow::Result<()> {
     Ok(())
 }
 
-pub(crate) fn load_config() -> anyhow::Result<Config> {
+pub(crate) fn load_config() -> Result<Config> {
     let cfg: Config = confy::load("tms-v2", None)?;
     Ok(cfg)
 }

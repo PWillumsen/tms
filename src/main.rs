@@ -1,6 +1,7 @@
-use anyhow::Context;
 use clap::Parser;
 use cli::{Commands, TmsArgs};
+use color_eyre::eyre::Result;
+use color_eyre::eyre::WrapErr;
 
 mod cli;
 mod config;
@@ -8,7 +9,9 @@ mod repos;
 mod select;
 mod tmux;
 
-fn main() -> anyhow::Result<()> {
+fn main() -> Result<()> {
+    color_eyre::install()?;
+
     let args = TmsArgs::parse();
     let config = config::load_config()?;
 
@@ -21,7 +24,7 @@ fn main() -> anyhow::Result<()> {
         Some(Commands::Completions { shell }) => cli::generate_completions(&shell),
         None => tmux::invoke_tms(config.paths, config.exclude, config.full_path),
     }
-    .context("Error from main")?;
+    .wrap_err("Error from main")?;
 
     Ok(())
 }

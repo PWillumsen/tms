@@ -1,6 +1,6 @@
 use clap::{Args, CommandFactory, Parser, Subcommand};
-use clap_complete::generate;
-use clap_complete::Shell;
+use clap_complete::{generate, Shell};
+use color_eyre::eyre::Result;
 use std::io;
 use std::path::PathBuf;
 
@@ -68,7 +68,7 @@ pub struct ConfigArgs {
     pub show: bool,
 }
 
-pub fn generate_completions(shell: &Shell) -> anyhow::Result<()> {
+pub fn generate_completions(shell: &Shell) -> Result<()> {
     generate(*shell, &mut TmsArgs::command(), "tms", &mut io::stdout());
     Ok(())
 }

@@ -21,7 +21,7 @@ pub(crate) fn update_config(config_args: ConfigArgs) -> anyhow::Result<()> {
         changed = true;
         cfg.paths.append(&mut paths);
     }
-    if let Some(remove) = config_args.remove {
+    if let Some(remove) = config_args.paths_remove {
         changed = true;
         cfg.paths.retain(|path| !remove.contains(path));
     }
@@ -30,7 +30,7 @@ pub(crate) fn update_config(config_args: ConfigArgs) -> anyhow::Result<()> {
         changed = true;
         cfg.exclude.append(&mut exclude);
     }
-    if let Some(remove_exclude) = config_args.remove_exclude {
+    if let Some(remove_exclude) = config_args.exclude_remove {
         changed = true;
         cfg.exclude.retain(|path| !remove_exclude.contains(path));
     }

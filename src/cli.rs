@@ -18,8 +18,6 @@ pub enum Commands {
     Config(ConfigArgs),
     /// Kill session
     Kill {
-        #[clap(short, long)]
-        session: Option<String>,
         #[clap(short, long, exclusive = true)]
         interactive: bool,
     },
@@ -50,7 +48,7 @@ pub struct ConfigArgs {
 
     /// Remove directories to exclude list
     #[clap(long)]
-    pub remove_exclude: Option<Vec<PathBuf>>,
+    pub exclude_remove: Option<Vec<PathBuf>>,
 
     /// Display full paths
     #[clap(short, long)]
@@ -62,7 +60,7 @@ pub struct ConfigArgs {
 
     /// Remove previously added paths
     #[clap(short, long)]
-    pub remove: Option<Vec<PathBuf>>,
+    pub paths_remove: Option<Vec<PathBuf>>,
 
     //TODO: fix how config is displayed, impl display
     /// Print config

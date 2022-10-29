@@ -7,7 +7,6 @@ use tmux::{kill_session, list_sessions, run_tms};
 mod cli;
 mod config;
 mod repos;
-mod select;
 mod tmux;
 
 fn main() -> Result<()> {

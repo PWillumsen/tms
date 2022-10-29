@@ -1,6 +1,8 @@
 use crate::config::Config;
-use crate::{repos, select};
+use crate::repos;
 use color_eyre::eyre::{Context, Result};
+use skim::prelude::*;
+use std::io::Cursor;
 use std::path::{Path, PathBuf};
 use tmux_interface::variables::session::session::SESSION_ALL;
 use tmux_interface::{KillSession, NewSession, Session, Sessions, TmuxCommand};
@@ -16,7 +18,7 @@ pub(crate) fn run_tms(config: Config) -> Result<()> {
 
     let select_options = repos.keys().cloned().collect::<Vec<String>>().join("\n");
 
-    if let Some(session_name) = select::select_item(select_options) {
+    if let Some(session_name) = select_item(select_options) {
         let mut sessions = get_sessions()?.into_iter().map(|s| s.name.unwrap());
 
         // TODO: Handle worktrees
@@ -101,4 +103,24 @@ fn get_attached_session() -> Result<Option<Session>> {
     Ok(get_sessions()?
         .into_iter()
         .find(|session| session.attached == Some(1)))
+}
+
+fn select_item(input: String) -> Option<String> {
+    let options = SkimOptionsBuilder::default()
+        .height(Some("50%"))
+        .multi(false)
+        .build()
+        .unwrap();
+
+    let item_reader = SkimItemReader::default();
+    let items = item_reader.of_bufread(Cursor::new(input));
+
+    let selected_items = Skim::run_with(&options, Some(items))?;
+
+    if selected_items.is_abort {
+        return None;
+    }
+
+    //FIX: Can it fail?
+    Some(selected_items.selected_items[0].output().to_string())
 }

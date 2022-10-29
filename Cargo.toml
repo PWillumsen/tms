@@ -1,7 +1,12 @@
 [package]
 name = "tms"
 version = "0.1.0"
+authors = ["Peter Willumsen"]
+license = "MIT OR Apache-2.0"
 edition = "2021"
+description = "Tmux-sessionizer"
+repository = "https://github.com/Peterwillumsen/tms/"
+keywords = ["tmux", "terminal"]
 
 [dependencies]
 clap = { version = "4.0.18", features = ["derive"] }

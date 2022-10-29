@@ -29,7 +29,7 @@ pub enum Commands {
         #[clap(value_enum)]
         shell: Shell,
     },
-    //TODO: Add interactive switch command
+    //TODO: Add interactive switch-session command
 }
 
 #[derive(Args, Debug)]
@@ -43,7 +43,7 @@ pub struct ConfigArgs {
     pub edit: bool,
 
     /// Sub directories to exclude from paths
-    #[clap(short, long, value_parser)]
+    #[clap(short, long)]
     pub exclude: Option<Vec<PathBuf>>,
 
     /// Remove directories to exclude list
@@ -54,6 +54,7 @@ pub struct ConfigArgs {
     #[clap(short, long)]
     pub full_paths: Option<bool>,
 
+    // TODO: custom parser for paths?
     /// The paths to search through. Paths must be full paths (no support for ~)
     #[clap(short, long)]
     pub paths: Option<Vec<PathBuf>>,
@@ -62,7 +63,6 @@ pub struct ConfigArgs {
     #[clap(long)]
     pub paths_remove: Option<Vec<PathBuf>>,
 
-    //TODO: fix how config is displayed, impl display
     /// Print config
     #[clap(short, long)]
     pub show: bool,

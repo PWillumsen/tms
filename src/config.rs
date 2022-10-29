@@ -16,10 +16,10 @@ pub(crate) struct Config {
 
 impl fmt::Display for Config {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "paths: {:?}\n", self.paths)?;
-        write!(f, "exclude: {:?}\n", self.exclude)?;
+        writeln!(f, "paths: {:?}", self.paths)?;
+        writeln!(f, "exclude: {:?}", self.exclude)?;
         if let Some(default_session) = &self.default_session {
-            write!(f, "default_session: {}\n", default_session)?;
+            writeln!(f, "default_session: {}", default_session)?;
         }
         if let Some(full_path) = &self.full_path {
             write!(f, "full_path: {}", full_path)?;

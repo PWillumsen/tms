@@ -17,7 +17,7 @@ pub(crate) fn get_repos(
         .iter()
         .for_each(|path| to_search.push_back(std::path::PathBuf::from(path)));
 
-    // FIX: exclude full path or just file name?
+    // FIX: exclude full path or just file name? Change exclude.contains(file_name) to other way around?
     while let Some(file) = to_search.pop_front() {
         let file_name = file.file_name().unwrap().to_str().unwrap();
         if !exclude.contains(&file_name.into()) {

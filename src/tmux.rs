@@ -4,7 +4,7 @@ use std::path::{Path, PathBuf};
 use tmux_interface::variables::session::session::SESSION_ALL;
 use tmux_interface::{KillSession, NewSession, Session, Sessions, TmuxCommand};
 
-pub(crate) fn invoke_tms(
+pub(crate) fn run_tms(
     paths: Vec<PathBuf>,
     exclude: Vec<PathBuf>,
     full_path: Option<bool>,
@@ -26,24 +26,24 @@ pub(crate) fn invoke_tms(
 
         if let Some(name) = session_name_short {
             if !sessions.any(|sess| sess == session_name) {
-                tm_new(&name, path)?;
+                tmux_new(&name, path)?;
             }
-            tm_switch(&name)?;
+            tmux_switch(&name)?;
         }
     }
 
     Ok(())
 }
 pub(crate) fn kill_session(_interactive: bool, default_session: Option<String>) -> Result<()> {
-    //TODO: Add interactive
+    //TODO: Add interactive multi choice
 
-    let current_session = get_attached_session();
-    if let Some(current_session) = current_session? {
+    let current_session = get_attached_session()?;
+    if let Some(current_session) = current_session {
         if let Some(name) = current_session.name {
             if let Some(default_session) = default_session {
-                tm_switch(&default_session)?;
+                tmux_switch(&default_session)?;
             }
-            tm_kill(&name)?;
+            tmux_kill(&name)?;
         }
     }
     Ok(())
@@ -51,10 +51,7 @@ pub(crate) fn kill_session(_interactive: bool, default_session: Option<String>) 
 
 pub(crate) fn list_sessions() -> Result<()> {
     for session in get_sessions()? {
-        let current = match session.attached {
-            Some(1) => "*",
-            _ => "",
-        };
+        let current = if session.attached == Some(1) { "*" } else { "" };
         if let Some(name) = session.name {
             println!("{}{} ", name, current);
         }
@@ -63,24 +60,24 @@ pub(crate) fn list_sessions() -> Result<()> {
     Ok(())
 }
 
-fn tm_switch(session: &str) -> Result<()> {
+fn tmux_switch(session: &str) -> Result<()> {
     TmuxCommand::new()
         .switch_client()
         .target_session(session)
         .output()
-        .wrap_err(format!("Error switching to session {:?}", session))?;
+        .wrap_err(format!("Error switching to session {}", session))?;
     Ok(())
 }
 
-fn tm_kill(session: &str) -> Result<()> {
+fn tmux_kill(session: &str) -> Result<()> {
     KillSession::new()
         .target_session(session)
         .output()
-        .wrap_err(format!("Error killing session {:?}", session))?;
+        .wrap_err(format!("Error killing session {}", session))?;
     Ok(())
 }
 
-fn tm_new(session: &str, dir: &Path) -> Result<()> {
+fn tmux_new(session: &str, dir: &Path) -> Result<()> {
     NewSession::new()
         .detached()
         .session_name(session)

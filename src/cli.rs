@@ -6,7 +6,7 @@ use std::path::PathBuf;
 
 #[derive(Parser, Debug)]
 #[command( version, about, long_about = None)]
-pub struct TmsArgs {
+pub struct Cli {
     #[command(subcommand)]
     pub command: Option<Commands>,
 }
@@ -29,7 +29,6 @@ pub enum Commands {
         #[clap(value_enum)]
         shell: Shell,
     },
-    //TODO: Add interactive switch-session command
 }
 
 #[derive(Args, Debug)]
@@ -69,6 +68,6 @@ pub struct ConfigArgs {
 }
 
 pub fn generate_completions(shell: &Shell) -> Result<()> {
-    generate(*shell, &mut TmsArgs::command(), "tms", &mut io::stdout());
+    generate(*shell, &mut Cli::command(), "tms", &mut io::stdout());
     Ok(())
 }

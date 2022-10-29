@@ -1,14 +1,17 @@
+use crate::config::Config;
 use crate::{repos, select};
 use color_eyre::eyre::{Context, Result};
 use std::path::{Path, PathBuf};
 use tmux_interface::variables::session::session::SESSION_ALL;
 use tmux_interface::{KillSession, NewSession, Session, Sessions, TmuxCommand};
 
-pub(crate) fn run_tms(
-    paths: Vec<PathBuf>,
-    exclude: Vec<PathBuf>,
-    full_path: Option<bool>,
-) -> Result<()> {
+pub(crate) fn run_tms(config: Config) -> Result<()> {
+    let Config {
+        paths,
+        exclude,
+        full_path,
+        ..
+    } = config;
     let repos = repos::get_repos(paths, exclude, full_path);
 
     let select_options = repos.keys().cloned().collect::<Vec<String>>().join("\n");
@@ -34,13 +37,13 @@ pub(crate) fn run_tms(
 
     Ok(())
 }
-pub(crate) fn kill_session(_interactive: bool, default_session: Option<String>) -> Result<()> {
+pub(crate) fn kill_session(_interactive: bool, config: Config) -> Result<()> {
     //TODO: Add interactive multi choice
 
     let current_session = get_attached_session()?;
     if let Some(current_session) = current_session {
         if let Some(name) = current_session.name {
-            if let Some(default_session) = default_session {
+            if let Some(default_session) = config.default_session {
                 tmux_switch(&default_session)?;
             }
             tmux_kill(&name)?;

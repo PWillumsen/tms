@@ -29,8 +29,9 @@ impl fmt::Display for Config {
     }
 }
 
+// TODO: change to impl
 pub(crate) fn update_config(config_args: ConfigArgs) -> Result<()> {
-    let mut cfg: Config = confy::load("tms-v2", None).wrap_err("Could not load config")?;
+    let mut cfg = load_config()?;
 
     let mut changed = false;
 

@@ -5,6 +5,7 @@ use std::{
     path::PathBuf,
 };
 
+// TODO: Remove unwraps
 pub(crate) fn get_repos(
     paths: Vec<PathBuf>,
     exclude: Vec<PathBuf>,

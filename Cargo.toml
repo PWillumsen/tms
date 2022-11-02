@@ -5,7 +5,7 @@ authors = ["Peter Willumsen"]
 license = "MIT OR Apache-2.0"
 edition = "2021"
 description = "Tmux-sessionizer"
-repository = "https://github.com/Peterwillumsen/tms/"
+repository = "https://github.com/Pwillumsen/tms/"
 keywords = ["tmux", "terminal"]
 
 [dependencies]
